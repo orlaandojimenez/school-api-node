@@ -18,17 +18,17 @@ const connection = mysql.createConnection(dbConfig);
 
 connection.connect((err) => {
   if (err) {
-    console.error("Error al conectar a la base de datos:", err);
+    console.error("Error connecting to database:", err);
     process.exit(1);
   }
-  console.log("Conexión exitosa a la base de datos");
+  console.log("Successful connection to the database");
 
   const sql = fs.readFileSync(initScript, "utf8");
   connection.query(sql, (err) => {
     if (err) {
-      console.error("Error al ejecutar el script SQL:", err);
+      console.error("Error executing SQL script:", err);
     } else {
-      console.log("Base de datos inicializada correctamente");
+      console.log("Error al ejecutar el script SQL:");
     }
     connection.end();
   });
