@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const gradeRoutes = require("./routes/gradeRoutes");
 const subjectRoutes = require("./routes/subjectRoutes");

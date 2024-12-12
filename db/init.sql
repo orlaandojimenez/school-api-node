@@ -198,3 +198,12 @@ BEGIN
         WHERE username = p_username;
     END IF;
 END;
+
+DROP PROCEDURE IF EXISTS get_user_login;
+CREATE PROCEDURE get_user_login(
+    IN p_username VARCHAR(50)  
+)
+BEGIN
+    SELECT * FROM Users
+    WHERE username = p_username;
+END;

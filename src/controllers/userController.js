@@ -1,11 +1,14 @@
 const { pool } = require("../../db/config");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const { validateRequiredFields } = require("../helpers");
+
+const jwtSecret = process.env.JWT_SECRET;
 
 const createUser = async (req, res) => {
   const { username, password } = req.body;
 
-  if (!validateRequiredFields(req.body)) {
+  if (!validateRequiredFields({ username, password })) {
     return res.status(400).json({
       error: "Both 'username' and 'password' are required.",
     });
@@ -84,8 +87,48 @@ const getUser = async (req, res) => {
   }
 };
 
+const login = async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!validateRequiredFields({ username, password })) {
+    return res.status(400).json({
+      error: "Username and password are required.",
+    });
+  }
+
+  try {
+    const [[user]] = await pool.execute("CALL get_user_login(?)", [username]);
+    if (!user || !user.length) {
+      return res.status(401).json({ error: "Invalid username or password." });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user[0].password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: "Invalid username or password." });
+    }
+
+    const payload = {
+      id: user.id,
+      username: user.username,
+    };
+    const token = jwt.sign(payload, jwtSecret, { expiresIn: "1h" });
+
+    res.status(200).json({
+      message: "Login successful",
+      token,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: "Error during login",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   createUser,
   getUsers,
   getUser,
+  login,
 };
