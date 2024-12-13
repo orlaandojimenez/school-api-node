@@ -53,8 +53,8 @@ const getStudents = async (req, res) => {
 };
 
 const searchStudents = async (req, res) => {
-  const { id, name, page = 1, pageSize = 10 } = req.query;
-  if (!id && !name) {
+  const { search, page = 1, pageSize = 10 } = req.query;
+  if (!search) {
     return res
       .status(400)
       .json({ error: "You must provide an id or name to search." });
@@ -63,10 +63,19 @@ const searchStudents = async (req, res) => {
   const limit = parseInt(pageSize, 10);
   const offset = (parseInt(page, 10) - 1) * limit;
 
+  let id = null;
+  let name = null;
+
+  if (!isNaN(search)) {
+    id = parseInt(search, 10);
+  } else {
+    name = search;
+  }
+
   try {
     const [result, totalResult] = await pool.execute(
       "CALL search_students(?, ?, ?, ?)",
-      [id || null, name || null, limit, offset]
+      [id, name, limit, offset]
     );
 
     const data = result[0] || [];

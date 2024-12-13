@@ -52,10 +52,32 @@ BEGIN
     INSERT INTO Grades (name) VALUES (p_name);
 END;
 
+DROP PROCEDURE IF EXISTS get_grades;
+CREATE PROCEDURE get_grades(
+    IN p_limit INT,
+    IN p_offset INT
+)
+BEGIN
+    SELECT COUNT(*) AS total_records FROM Grades;
+
+    SELECT * FROM Grades ORDER BY id LIMIT p_limit OFFSET p_offset;
+END;
+
 DROP PROCEDURE IF EXISTS insert_subject;
 CREATE PROCEDURE insert_subject(IN p_name VARCHAR(50))
 BEGIN
     INSERT INTO Subjects (name) VALUES (p_name);
+END;
+
+DROP PROCEDURE IF EXISTS get_subjects;
+CREATE PROCEDURE get_subjects(
+    IN p_limit INT,
+    IN p_offset INT
+)
+BEGIN
+    SELECT COUNT(*) AS total_records FROM Subjects;
+
+    SELECT * FROM Subjects ORDER BY id LIMIT p_limit OFFSET p_offset;
 END;
 
 DROP PROCEDURE IF EXISTS insert_student;
