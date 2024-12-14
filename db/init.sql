@@ -229,3 +229,44 @@ BEGIN
     SELECT * FROM Users
     WHERE username = p_username;
 END;
+
+DROP PROCEDURE IF EXISTS insert_score;
+CREATE PROCEDURE insert_score(
+    IN p_student_id INT,
+    IN p_grade_id INT,
+    IN p_subject_id INT,
+    IN p_month INT,
+    IN p_score DECIMAL(5,2)
+)
+BEGIN
+    INSERT INTO Scores (student_id, grade_id, subject_id, month, score)
+    VALUES (p_student_id, p_grade_id, p_subject_id, p_month, p_score);
+END;
+
+DROP PROCEDURE IF EXISTS get_scores_by_student;
+CREATE PROCEDURE get_scores_by_student(
+    IN p_student_id INT,
+    IN p_grade_id INT,
+    IN p_month INT
+)
+BEGIN
+    SELECT 
+        s.id AS score_id,
+        s.student_id,
+        g.name AS grade_name,
+        sub.name AS subject_name,
+        s.month,
+        s.score
+    FROM 
+        Scores s
+    JOIN 
+        Grades g ON s.grade_id = g.id
+    JOIN 
+        Subjects sub ON s.subject_id = sub.id
+    WHERE 
+        s.student_id = p_student_id AND
+        s.grade_id = p_grade_id AND
+        s.month = p_month
+    ORDER BY 
+        g.name, s.month, sub.name, s.score;
+END;
