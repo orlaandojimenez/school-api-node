@@ -48,4 +48,5 @@ La API incluye varios endpoints, tales como:
 • GET /api/users: Obtener todos los usuarios.
 • GET /api/users/{id}: Obtener un usuario por id.
 
+El endpoint de crear usuario es público, de modo que se puedan crear usuarios para navegar por la api
 Recuerda incluir el token JWT en los headers de las solicitudes a los endpoints protegidos.
